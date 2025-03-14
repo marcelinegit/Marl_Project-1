@@ -1,0 +1,5 @@
+.terraform/
+.terraform.*
+terraform.tfstate
+private_key.pem
+gmarciy-dockersecret
