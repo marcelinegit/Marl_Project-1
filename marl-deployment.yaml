@@ -21,6 +21,34 @@ spec:
         - containerPort: 80
       imagePullSecrets: 
         - name: dockerhub-secret
+      tolerations:
+      - key: "marl-deployment"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+      - key: "coffeeshop"
+        operator: "Exists"
+        effect: "PreferNoSchedule"
+        #tolerationSeconds: 60 works only with NoExercute
+      nodeSelector:
+        marl-deployment: "true"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: marl-deployment
+                operator: In
+                values:
+                - "true"
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: GPU
+                operator: In
+                values:
+                - "true" 
   strategy:                # This defines the update strategy for the Deployment.
     type: RollingUpdate    # This strategy replaces Pods incrementally, while maintaining availability.
     rollingUpdate:
